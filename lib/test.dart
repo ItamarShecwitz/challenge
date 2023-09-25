@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-final GlobalKey<_SwitchExampleState> _switchExampleStateKey =
-    GlobalKey<_SwitchExampleState>();
 void main() {
   runApp(const MyApp());
 }
@@ -37,6 +35,9 @@ class MyApp extends StatelessWidget {
   }
 }
 
+final GlobalKey<_SwitchExampleState> _switchExampleStateKey =
+    GlobalKey<_SwitchExampleState>();
+
 class RootPage extends StatefulWidget {
   const RootPage({super.key});
 
@@ -60,7 +61,7 @@ class SwitchExample extends StatefulWidget {
   const SwitchExample({super.key});
 
   @override
-  State<SwitchExample> createState() => _SwitchExampleState();
+  _SwitchExampleState createState() => _SwitchExampleState();
 }
 
 class _SwitchExampleState extends State<SwitchExample> {
