@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "499004763829",
+    "project_id": "challenge-itamar",
+    "storage_bucket": "challenge-itamar.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:499004763829:android:4eb1324f3a91e59ff318fc",
+        "android_client_info": {
+          "package_name": "com.example.challenge"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXzTgIg8NpNLAEs2ulpTUmj5YkpXwbKSY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
