@@ -4,51 +4,63 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:challenge/firebase_options.dart';
 
-final GlobalKey<TheSwitchState> _switchExampleStateKey =
+final GlobalKey<TheSwitchState> switchExampleStateKey =
     GlobalKey<TheSwitchState>();
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  Future<void> resetButton() async {
+  const MyApp({super.key});
+
+  void firebaseLoader() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+  }
 
-    final prefs = await SharedPreferences.getInstance();
-    if (prefs.getBool('switch_state') ?? false) {
-      _switchExampleStateKey.currentState?.resetSwitch(true);
+  void loadData() async {
+    final data = await SharedPreferences.getInstance();
+
+    loadSwitchState(data);
+
+    switchReset(data);
+
+    // Update the last_switch to the current time
+    await data.setString('last_switch', DateTime.now().toIso8601String());
+  }
+
+  void loadSwitchState(data) {
+    // load the switch state
+    if (data.getBool('switch_state') ?? false) {
+      switchExampleStateKey.currentState?.resetSwitch(true);
     }
     if (kDebugMode) {
-      print("_switchExampleStateKey.currentState?.light");
-      print(_switchExampleStateKey.currentState?.light);
+      print("switchExampleStateKey.currentState?.light");
+      print(switchExampleStateKey.currentState?.light);
     }
-    // Gets this current time
-    DateTime now = DateTime.now();
+  }
 
-    // Gets the last day that the user has logged in.
+  void switchReset(data) async {
+    // Get current time and last day that the user has logged in.
+    DateTime now = DateTime.now();
     DateTime lastDay =
-        DateTime.parse(prefs.getString('last_day') ?? now.toIso8601String());
+        DateTime.parse(data.getString('last_switch') ?? now.toIso8601String());
 
     // Check if a day has passed
     if (DateTime(now.year, now.month, now.day, now.minute).isAfter(
         DateTime(lastDay.year, lastDay.month, lastDay.day, lastDay.minute))) {
       // If a day has passed, reset the switch to false
-      _switchExampleStateKey.currentState?.resetSwitch(false);
+      switchExampleStateKey.currentState?.resetSwitch(false);
       if (kDebugMode) {
         print("PASS");
       }
     }
-    // Update the last_day to the current time
-    await prefs.setString('last_day', now.toIso8601String());
   }
-
-  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    resetButton();
+    loadData();
 
     return const MaterialApp(home: RootPage());
   }
@@ -68,7 +80,7 @@ class RootPageState extends State<RootPage> {
       appBar: AppBar(
         title: const Text("Demo Project"),
       ),
-      body: Center(child: TheSwitch(key: _switchExampleStateKey)),
+      body: Center(child: TheSwitch(key: switchExampleStateKey)),
     );
   }
 }
@@ -98,11 +110,12 @@ class TheSwitchState extends State<TheSwitch> {
       activeColor: const Color.fromARGB(255, 255, 124, 30),
       onChanged: (bool newValue) async {
         final prefs = await SharedPreferences.getInstance();
-        DateTime lastDay = DateTime.parse(
-            prefs.getString('last_day') ?? now.toIso8601String());
-        if (kDebugMode) {
-          print(lastDay);
-        }
+        // DateTime lastDay = DateTime.parse(
+        //     prefs.getString('last_switch') ?? now.toIso8601String());
+        // if (kDebugMode) {
+        //   print(lastDay);
+        // }
+        await prefs.setString('last_switch', DateTime.now().toIso8601String());
         void saveValue() async {
           final prefs = await SharedPreferences.getInstance();
           await prefs.setBool('switch_state', newValue);
